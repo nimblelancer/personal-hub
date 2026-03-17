@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node $HOME/.claude/scripts/set-active-plan.cjs plans/260317-2233-personal-hub-system)",
+      "Bash(node:*)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --yes)",
+      "Bash(mkdir -p /tmp/nh-init)",
+      "Read(//tmp/**)",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn@latest init --yes --defaults)",
+      "Bash(npx shadcn@latest add input textarea card badge dialog dropdown-menu sheet sidebar separator tabs toast --yes)",
+      "Bash(npx shadcn@latest add input textarea card badge dialog dropdown-menu sheet separator tabs sonner --yes)",
+      "Bash(npx shadcn@latest add label --yes)",
+      "Bash(npm run:*)",
+      "Bash(find /home/nimblelancer/personal-hub/src -type f -name *.test.* -o -name *.spec.*)",
+      "Bash(npx tsc:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
