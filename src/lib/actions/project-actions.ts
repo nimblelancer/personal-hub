@@ -3,6 +3,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { logActivity } from '@/lib/actions/activity-actions'
 import { generateProjectDocTemplate } from '@/lib/project-doc-template'
+import { CreateProjectSchema, UpdateProjectSchema } from '@/lib/validations/project-schemas'
 import type { ProjectInsert, ProjectWithDetails } from '@/types'
 import type { ProjectStatusType, ProjectTypeType, VisibilityType } from '@/types/database'
 
@@ -66,48 +67,62 @@ export async function getProject(id: string): Promise<ProjectWithDetails | null>
 }
 
 export async function createProject(data: Omit<ProjectInsert, 'user_id'>) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  const parsed = CreateProjectSchema.safeParse(data)
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input' }
 
-  const { data: project, error } = await supabase
-    .from('projects')
-    .insert({ ...data, user_id: user.id })
-    .select()
-    .single()
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  if (error || !project) return { error: error?.message ?? 'Failed to create project' }
+    const { data: project, error } = await supabase
+      .from('projects')
+      .insert({ ...data, user_id: user.id })
+      .select()
+      .single()
 
-  // Insert initial project docs with template
-  await supabase.from('project_docs').insert({
-    project_id: project.id,
-    content: generateProjectDocTemplate(project.name),
-  })
+    if (error || !project) return { error: error?.message ?? 'Failed to create project' }
 
-  await logActivity(user.id, 'project', project.id, 'created')
-  revalidatePath('/admin/projects')
-  return { data: project }
+    // Insert initial project docs with template
+    await supabase.from('project_docs').insert({
+      project_id: project.id,
+      content: generateProjectDocTemplate(project.name),
+    })
+
+    await logActivity(user.id, 'project', project.id, 'created')
+    revalidatePath('/admin/projects')
+    return { data: project }
+  } catch {
+    return { error: 'Failed to create project' }
+  }
 }
 
 export async function updateProject(id: string, data: Partial<ProjectInsert>) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  const parsed = UpdateProjectSchema.safeParse(data)
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input' }
 
-  const { data: project, error } = await supabase
-    .from('projects')
-    .update({ ...data, updated_at: new Date().toISOString() })
-    .eq('id', id)
-    .eq('user_id', user.id)
-    .select()
-    .single()
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  if (error || !project) return { error: error?.message ?? 'Failed to update project' }
+    const { data: project, error } = await supabase
+      .from('projects')
+      .update({ ...data, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select()
+      .single()
 
-  await logActivity(user.id, 'project', id, 'updated')
-  revalidatePath('/admin/projects')
-  revalidatePath(`/admin/projects/${id}`)
-  return { data: project }
+    if (error || !project) return { error: error?.message ?? 'Failed to update project' }
+
+    await logActivity(user.id, 'project', id, 'updated')
+    revalidatePath('/admin/projects')
+    revalidatePath(`/admin/projects/${id}`)
+    return { data: project }
+  } catch {
+    return { error: 'Failed to update project' }
+  }
 }
 
 export async function updateProjectStatus(id: string, status: ProjectStatusType) {
@@ -115,52 +130,64 @@ export async function updateProjectStatus(id: string, status: ProjectStatusType)
 }
 
 export async function deleteProject(id: string) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  const { error } = await supabase
-    .from('projects')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', user.id)
+    const { error } = await supabase
+      .from('projects')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id)
 
-  if (error) return { error: error.message }
+    if (error) return { error: error.message }
 
-  await logActivity(user.id, 'project', id, 'deleted')
-  revalidatePath('/admin/projects')
-  return { success: true }
+    await logActivity(user.id, 'project', id, 'deleted')
+    revalidatePath('/admin/projects')
+    return { success: true }
+  } catch {
+    return { error: 'Failed to delete project' }
+  }
 }
 
 export async function updateProjectDoc(projectId: string, content: string) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  // Upsert project doc
-  const { error } = await supabase
-    .from('project_docs')
-    .upsert({ project_id: projectId, content, updated_at: new Date().toISOString() }, {
-      onConflict: 'project_id',
-    })
+    // Upsert project doc
+    const { error } = await supabase
+      .from('project_docs')
+      .upsert({ project_id: projectId, content, updated_at: new Date().toISOString() }, {
+        onConflict: 'project_id',
+      })
 
-  if (error) return { error: error.message }
-  revalidatePath(`/admin/projects/${projectId}`)
-  return { success: true }
+    if (error) return { error: error.message }
+    revalidatePath(`/admin/projects/${projectId}`)
+    return { success: true }
+  } catch {
+    return { error: 'Failed to update project doc' }
+  }
 }
 
 export async function updateLessonsLearned(projectId: string, content: string) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  const { error } = await supabase
-    .from('lessons_learned')
-    .upsert({ project_id: projectId, content, updated_at: new Date().toISOString() }, {
-      onConflict: 'project_id',
-    })
+    const { error } = await supabase
+      .from('lessons_learned')
+      .upsert({ project_id: projectId, content, updated_at: new Date().toISOString() }, {
+        onConflict: 'project_id',
+      })
 
-  if (error) return { error: error.message }
-  revalidatePath(`/admin/projects/${projectId}`)
-  return { success: true }
+    if (error) return { error: error.message }
+    revalidatePath(`/admin/projects/${projectId}`)
+    return { success: true }
+  } catch {
+    return { error: 'Failed to update lessons learned' }
+  }
 }

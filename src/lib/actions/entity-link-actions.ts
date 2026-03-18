@@ -26,53 +26,61 @@ export async function createEntityLink(
   bType: EntityType,
   bId: string
 ): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  // Check for existing link in either direction
-  const { data: existing } = await supabase
-    .from('entity_links')
-    .select('id')
-    .or(
-      `and(entity_a_type.eq.${aType},entity_a_id.eq.${aId},entity_b_type.eq.${bType},entity_b_id.eq.${bId}),` +
-      `and(entity_a_type.eq.${bType},entity_a_id.eq.${bId},entity_b_type.eq.${aType},entity_b_id.eq.${aId})`
-    )
-    .maybeSingle()
+    // Check for existing link in either direction
+    const { data: existing } = await supabase
+      .from('entity_links')
+      .select('id')
+      .or(
+        `and(entity_a_type.eq.${aType},entity_a_id.eq.${aId},entity_b_type.eq.${bType},entity_b_id.eq.${bId}),` +
+        `and(entity_a_type.eq.${bType},entity_a_id.eq.${bId},entity_b_type.eq.${aType},entity_b_id.eq.${aId})`
+      )
+      .maybeSingle()
 
-  if (existing) return { error: 'Link already exists' }
+    if (existing) return { error: 'Link already exists' }
 
-  const { error } = await supabase.from('entity_links').insert({
-    entity_a_type: aType,
-    entity_a_id: aId,
-    entity_b_type: bType,
-    entity_b_id: bId,
-  })
+    const { error } = await supabase.from('entity_links').insert({
+      entity_a_type: aType,
+      entity_a_id: aId,
+      entity_b_type: bType,
+      entity_b_id: bId,
+    })
 
-  if (error) return { error: error.message }
+    if (error) return { error: error.message }
 
-  revalidatePath(`/admin/learning/notes/${aId}`)
-  revalidatePath(`/admin/learning/notes/${bId}`)
-  revalidatePath(`/admin/projects/${aId}`)
-  revalidatePath(`/admin/projects/${bId}`)
-  return {}
+    revalidatePath(`/admin/learning/notes/${aId}`)
+    revalidatePath(`/admin/learning/notes/${bId}`)
+    revalidatePath(`/admin/projects/${aId}`)
+    revalidatePath(`/admin/projects/${bId}`)
+    return {}
+  } catch {
+    return { error: 'Failed to create link' }
+  }
 }
 
 export async function deleteEntityLink(linkId: string): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  const { error } = await supabase
-    .from('entity_links')
-    .delete()
-    .eq('id', linkId)
+    const { error } = await supabase
+      .from('entity_links')
+      .delete()
+      .eq('id', linkId)
 
-  if (error) return { error: error.message }
+    if (error) return { error: error.message }
 
-  revalidatePath('/admin/learning/notes')
-  revalidatePath('/admin/projects')
-  return {}
+    revalidatePath('/admin/learning/notes')
+    revalidatePath('/admin/projects')
+    return {}
+  } catch {
+    return { error: 'Failed to delete link' }
+  }
 }
 
 export async function getLinkedEntities(

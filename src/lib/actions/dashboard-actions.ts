@@ -125,25 +125,27 @@ export async function getRecentActivity(
 
   if (!data) return []
 
-  // Resolve entity titles in parallel batches per type
+  // Batch-fetch entity titles in parallel — one query per type, no per-item N+1
   const noteIds = data.filter((r) => r.entity_type === 'note').map((r) => r.entity_id)
   const projectIds = data.filter((r) => r.entity_type === 'project').map((r) => r.entity_id)
   const bookmarkIds = data.filter((r) => r.entity_type === 'bookmark').map((r) => r.entity_id)
 
-  const titleMap: Record<string, string> = {}
+  const [notesRes, projectsRes, bookmarksRes] = await Promise.all([
+    noteIds.length > 0
+      ? supabase.from('notes').select('id, title').in('id', noteIds)
+      : Promise.resolve({ data: [] }),
+    projectIds.length > 0
+      ? supabase.from('projects').select('id, name').in('id', projectIds)
+      : Promise.resolve({ data: [] }),
+    bookmarkIds.length > 0
+      ? supabase.from('bookmarks').select('id, title').in('id', bookmarkIds)
+      : Promise.resolve({ data: [] }),
+  ])
 
-  if (noteIds.length > 0) {
-    const { data: notes } = await supabase.from('notes').select('id, title').in('id', noteIds)
-    for (const n of notes ?? []) titleMap[n.id] = n.title
-  }
-  if (projectIds.length > 0) {
-    const { data: prjs } = await supabase.from('projects').select('id, name').in('id', projectIds)
-    for (const p of prjs ?? []) titleMap[p.id] = p.name
-  }
-  if (bookmarkIds.length > 0) {
-    const { data: bms } = await supabase.from('bookmarks').select('id, title').in('id', bookmarkIds)
-    for (const b of bms ?? []) titleMap[b.id] = b.title
-  }
+  const titleMap: Record<string, string> = {}
+  for (const n of notesRes.data ?? []) titleMap[n.id] = n.title
+  for (const p of (projectsRes.data ?? []) as { id: string; name: string }[]) titleMap[p.id] = p.name
+  for (const b of bookmarksRes.data ?? []) titleMap[b.id] = b.title
 
   return data.map((row) => ({
     id: row.id,

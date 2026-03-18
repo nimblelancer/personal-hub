@@ -43,34 +43,38 @@ export async function submitReview(
   noteId: string,
   rating: ReviewRating
 ): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  // Fetch current level
-  const { data: schedule, error: fetchError } = await supabase
-    .from('review_schedule')
-    .select('level')
-    .eq('id', scheduleId)
-    .single()
+    // Fetch current level
+    const { data: schedule, error: fetchError } = await supabase
+      .from('review_schedule')
+      .select('level')
+      .eq('id', scheduleId)
+      .single()
 
-  if (fetchError) return { error: fetchError.message }
+    if (fetchError) return { error: fetchError.message }
 
-  const { newLevel, nextReviewDays } = calculateNextReview(schedule.level, rating)
+    const { newLevel, nextReviewDays } = calculateNextReview(schedule.level, rating)
 
-  const { error } = await supabase
-    .from('review_schedule')
-    .update({
-      level: newLevel,
-      next_review: addDays(nextReviewDays),
-      last_reviewed: new Date().toISOString().split('T')[0],
-    })
-    .eq('id', scheduleId)
-    .eq('user_id', user.id)
+    const { error } = await supabase
+      .from('review_schedule')
+      .update({
+        level: newLevel,
+        next_review: addDays(nextReviewDays),
+        last_reviewed: new Date().toISOString().split('T')[0],
+      })
+      .eq('id', scheduleId)
+      .eq('user_id', user.id)
 
-  if (error) return { error: error.message }
+    if (error) return { error: error.message }
 
-  await logActivity(user.id, 'note', noteId, `review:${rating}`)
-  revalidatePath('/admin/learning/review')
-  return {}
+    await logActivity(user.id, 'note', noteId, `review:${rating}`)
+    revalidatePath('/admin/learning/review')
+    return {}
+  } catch {
+    return { error: 'Failed to submit review' }
+  }
 }
