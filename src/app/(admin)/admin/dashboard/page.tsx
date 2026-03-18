@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import {
   getReviewDueCount,
@@ -26,19 +27,39 @@ function formatDate(): string {
   })
 }
 
+function WidgetSkeleton() {
+  return <div className="animate-pulse rounded-xl bg-muted h-40" />
+}
+
+function WideWidgetSkeleton() {
+  return (
+    <div className="animate-pulse rounded-xl bg-muted h-40 sm:col-span-2" />
+  )
+}
+
+async function ReviewDueWidgetLoader({ userId }: { userId: string }) {
+  const [count, preview] = await Promise.all([
+    getReviewDueCount(userId),
+    getReviewDuePreview(userId, 5),
+  ])
+  return <ReviewDueWidget count={count} preview={preview} />
+}
+
+async function ActiveProjectsWidgetLoader({ userId }: { userId: string }) {
+  const projects = await getActiveProjects(userId)
+  return <ActiveProjectsWidget projects={projects} />
+}
+
+async function RecentActivityWidgetLoader({ userId }: { userId: string }) {
+  const activities = await getRecentActivity(userId, 20)
+  return <RecentActivityWidget activities={activities} />
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) return null
-
-  const [reviewCount, reviewPreview, activeProjects, recentActivity] =
-    await Promise.all([
-      getReviewDueCount(user.id),
-      getReviewDuePreview(user.id, 5),
-      getActiveProjects(user.id),
-      getRecentActivity(user.id, 20),
-    ])
 
   return (
     <div className="space-y-6 max-w-4xl">
@@ -52,10 +73,16 @@ export default async function DashboardPage() {
 
       {/* Widgets grid */}
       <DashboardGrid>
-        <ReviewDueWidget count={reviewCount} preview={reviewPreview} />
-        <ActiveProjectsWidget projects={activeProjects} />
+        <Suspense fallback={<WidgetSkeleton />}>
+          <ReviewDueWidgetLoader userId={user.id} />
+        </Suspense>
+        <Suspense fallback={<WidgetSkeleton />}>
+          <ActiveProjectsWidgetLoader userId={user.id} />
+        </Suspense>
         <QuickActionsWidget />
-        <RecentActivityWidget activities={recentActivity} />
+        <Suspense fallback={<WideWidgetSkeleton />}>
+          <RecentActivityWidgetLoader userId={user.id} />
+        </Suspense>
       </DashboardGrid>
     </div>
   )
