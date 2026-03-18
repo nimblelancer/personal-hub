@@ -1,69 +1,19 @@
 'use client'
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { createProject, updateProject } from '@/lib/actions/project-actions'
 import { uploadProjectImage } from '@/lib/actions/storage-actions'
+import { ChipInput } from './chip-input'
+import { ProjectThumbnailUpload } from './project-thumbnail-upload'
 import type { Project, ProjectInsert } from '@/types'
 import type { ProjectTypeType, ProjectStatusType, VisibilityType } from '@/types/database'
-import { XIcon } from 'lucide-react'
 
 interface ProjectFormProps {
   initialData?: Project
   onSuccess?: () => void
-}
-
-// Chip input for tech_stack and topics
-function ChipInput({
-  label,
-  chips,
-  onChange,
-}: {
-  label: string
-  chips: string[]
-  onChange: (chips: string[]) => void
-}) {
-  const [inputVal, setInputVal] = useState('')
-
-  function add() {
-    const val = inputVal.trim()
-    if (val && !chips.includes(val)) onChange([...chips, val])
-    setInputVal('')
-  }
-
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label>{label}</Label>
-      <div className="flex flex-wrap gap-1.5 min-h-8 p-1.5 rounded-lg border border-input bg-transparent">
-        {chips.map((chip) => (
-          <span
-            key={chip}
-            className="inline-flex items-center gap-1 rounded-md bg-muted px-2 py-0.5 text-xs"
-          >
-            {chip}
-            <button
-              type="button"
-              onClick={() => onChange(chips.filter((c) => c !== chip))}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <XIcon className="size-3" />
-            </button>
-          </span>
-        ))}
-        <input
-          type="text"
-          value={inputVal}
-          onChange={(e) => setInputVal(e.target.value)}
-          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); add() } }}
-          placeholder="Type + Enter"
-          className="flex-1 min-w-20 bg-transparent text-xs outline-none placeholder:text-muted-foreground"
-        />
-      </div>
-    </div>
-  )
 }
 
 export function ProjectForm({ initialData, onSuccess }: ProjectFormProps) {
@@ -206,20 +156,10 @@ export function ProjectForm({ initialData, onSuccess }: ProjectFormProps) {
         />
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="thumbnail">Thumbnail image</Label>
-        {initialData?.thumbnail_url && (
-          <Image src={initialData.thumbnail_url} alt="thumbnail" width={128} height={80} className="h-20 w-32 object-cover rounded-lg" />
-        )}
-        <Input
-          id="thumbnail"
-          name="thumbnail"
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/gif"
-          onChange={(e) => setThumbnailFile(e.target.files?.[0] ?? null)}
-          className="cursor-pointer"
-        />
-      </div>
+      <ProjectThumbnailUpload
+        currentUrl={initialData?.thumbnail_url}
+        onChange={setThumbnailFile}
+      />
 
       <div className="flex gap-2 pt-2">
         <Button type="submit" disabled={isPending || uploading}>
