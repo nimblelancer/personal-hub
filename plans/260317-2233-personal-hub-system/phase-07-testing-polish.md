@@ -1,12 +1,13 @@
 ---
 title: "Phase 7 — Testing & Polish"
 description: "Split oversized files, add input validation, error handling, fix N+1, add tests and Suspense"
-status: pending
+status: in_progress
 priority: P1
 effort: 3-4 days
 branch: master
 tags: [testing, security, refactoring, performance]
 created: 2026-03-18
+progress: "60% (P0+P1 done, P2 pending)"
 ---
 
 # Phase 7 — Testing & Polish
@@ -154,19 +155,24 @@ Hardening pass: enforce dev rules (<200 lines), add input validation, consistent
 
 ## Todo List
 
-- [ ] Split `roadmap-node-item.tsx` into 3 files
-- [ ] Split `project-form.tsx` — extract ChipInput + image upload
-- [ ] Split `roadmap-actions.ts` into query + mutation files
-- [ ] Install Zod, create validation schemas
-- [ ] Add Zod `.safeParse()` to all mutation actions
-- [ ] Add try-catch to all server action mutations
-- [ ] Return consistent `{ success } | { error }` from all mutations
-- [ ] Fix N+1: `Promise.all()` in dashboard queries
-- [ ] Install Vitest + Testing Library
-- [ ] Write unit tests for note/project/review actions
-- [ ] Add Suspense boundaries to dashboard + detail pages
-- [ ] (P2) Install Playwright, write auth + CRUD E2E tests
-- [ ] (P2) Add rate limiting to auth routes
+### P0 — Code Quality & Security (COMPLETED)
+- [x] Split `roadmap-node-item.tsx` into 3 files
+- [x] Split `project-form.tsx` — extract ChipInput + image upload
+- [x] Split `roadmap-actions.ts` into query + mutation files
+- [x] Install Zod, create validation schemas
+- [x] Add Zod `.safeParse()` to all mutation actions
+- [x] Add try-catch to all server action mutations
+- [x] Return consistent `{ success } | { error }` from all mutations
+- [x] Fix N+1: `Promise.all()` in dashboard queries
+
+### P1 — Testing & UX (COMPLETED)
+- [x] Install Vitest + Testing Library
+- [x] Write unit tests for note/project/review actions (~100 test cases)
+- [x] Add Suspense boundaries to dashboard + detail pages
+
+### P2 — E2E & Rate Limiting (PENDING FOR NEXT SESSION)
+- [ ] Install Playwright, write auth + CRUD E2E tests
+- [ ] Add rate limiting to auth routes
 - [ ] Verify build passes with 0 TS errors after all changes
 
 ## Success Criteria
