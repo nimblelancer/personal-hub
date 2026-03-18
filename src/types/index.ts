@@ -1,5 +1,6 @@
-import type { Database, NoteTopicType, VisibilityType } from './database'
+import type { Database, NoteTopicType, RoadmapNodeStatusType, VisibilityType } from './database'
 
+export type Profile = Database['public']['Tables']['profiles']['Row']
 export type Note = Database['public']['Tables']['notes']['Row']
 export type NoteInsert = Database['public']['Tables']['notes']['Insert']
 export type ReviewSchedule = Database['public']['Tables']['review_schedule']['Row']
@@ -34,3 +35,20 @@ export type NoteFilters = {
 }
 
 export type ReviewRating = 'remember' | 'fuzzy' | 'forgot'
+
+// Roadmap types
+export type Roadmap = Database['public']['Tables']['roadmaps']['Row']
+export type RoadmapInsert = Database['public']['Tables']['roadmaps']['Insert']
+export type RoadmapNode = Database['public']['Tables']['roadmap_nodes']['Row']
+export type RoadmapNodeInsert = Database['public']['Tables']['roadmap_nodes']['Insert']
+
+export type RoadmapNodeWithChildren = RoadmapNode & { children: RoadmapNode[] }
+
+export type RoadmapWithStats = Roadmap & {
+  node_count: number
+  completed_count: number
+  percentage: number
+}
+
+// Re-export for convenience
+export type { RoadmapNodeStatusType }

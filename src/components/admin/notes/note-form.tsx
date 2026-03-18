@@ -69,7 +69,7 @@ export function NoteForm({ initialData, onSuccess }: Props) {
       toast.success(initialData ? 'Note updated' : 'Note created')
       onSuccess?.()
       if (!initialData) {
-        router.push('/learning/notes')
+        router.push('/admin/learning/notes')
       }
     })
   }

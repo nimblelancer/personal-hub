@@ -71,6 +71,6 @@ export async function submitReview(
   if (error) return { error: error.message }
 
   await logActivity(user.id, 'note', noteId, `review:${rating}`)
-  revalidatePath('/learning/review')
+  revalidatePath('/admin/learning/review')
   return {}
 }

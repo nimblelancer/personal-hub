@@ -21,7 +21,13 @@
       "Bash(claude remote-control:*)",
       "Bash(npm list:*)",
       "Bash(npx next:*)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(ls \"src/app/\\(admin\\)/admin/\")",
+      "Bash(ls \"src/app/\\(admin\\)/\")",
+      "Bash(ls \"src/app/\\(admin\\)/admin/projects/\")",
+      "Bash(find \"src/app/\\(admin\\)/admin/\" -name \"*.tsx\")",
+      "Bash(grep -rn \"href=\"\"/learning\\\\|href=\"\"/projects\\\\|href=\"\"/dashboard\\\\|href=\"\"/settings\\\\|href={\\\\`/learning\\\\|href={\\\\`/projects\\\\|href={\\\\`/dashboard\\\\|href={\\\\`/settings\" src/components/admin/ src/app/ --include=\"*.tsx\")",
+      "Bash(grep -rn \"href=\"\"/projects\\\\|href=\"\"/learning\\\\|href=\"\"/dashboard\\\\|href={\\\\`/projects\\\\|href={\\\\`/learning\" \"src/app/\\(admin\\)/\" --include=\"*.tsx\")"
     ]
   }
 }

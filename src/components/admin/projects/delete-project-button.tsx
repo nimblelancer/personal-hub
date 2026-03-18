@@ -15,7 +15,7 @@ export function DeleteProjectButton({ projectId }: DeleteProjectButtonProps) {
     if (!confirm('Delete this project? This action cannot be undone.')) return
     startTransition(async () => {
       await deleteProject(projectId)
-      router.push('/projects')
+      router.push('/admin/projects')
     })
   }
 

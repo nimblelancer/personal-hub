@@ -20,7 +20,7 @@ export function DeleteNoteButton({ noteId }: Props) {
         return
       }
       toast.success('Note deleted')
-      router.push('/learning/notes')
+      router.push('/admin/learning/notes')
     })
   }
 

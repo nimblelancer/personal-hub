@@ -9,6 +9,7 @@ import {
   Map,
   Bookmark,
   FolderKanban,
+  Settings,
   LogOut,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -31,22 +32,28 @@ type NavSection = {
 const navSections: NavSection[] = [
   {
     items: [
-      { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+      { label: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
     ],
   },
   {
     title: 'Learning Lab',
     items: [
-      { label: 'Notes', href: '/learning/notes', icon: BookOpen },
-      { label: 'Review', href: '/learning/review', icon: Brain },
-      { label: 'Roadmap', href: '/learning/roadmap', icon: Map },
-      { label: 'Bookmarks', href: '/learning/bookmarks', icon: Bookmark },
+      { label: 'Notes', href: '/admin/learning/notes', icon: BookOpen },
+      { label: 'Review', href: '/admin/learning/review', icon: Brain },
+      { label: 'Roadmap', href: '/admin/learning/roadmap', icon: Map },
+      { label: 'Bookmarks', href: '/admin/learning/bookmarks', icon: Bookmark },
     ],
   },
   {
     title: 'Projects',
     items: [
-      { label: 'All Projects', href: '/projects', icon: FolderKanban },
+      { label: 'All Projects', href: '/admin/projects', icon: FolderKanban },
+    ],
+  },
+  {
+    title: 'Account',
+    items: [
+      { label: 'Settings', href: '/admin/settings', icon: Settings },
     ],
   },
 ]

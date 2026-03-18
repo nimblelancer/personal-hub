@@ -54,7 +54,7 @@ export function BookmarkForm() {
       }
 
       toast.success('Bookmark saved')
-      router.push('/learning/bookmarks')
+      router.push('/admin/learning/bookmarks')
     })
   }
 

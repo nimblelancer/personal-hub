@@ -119,7 +119,7 @@ export function ProjectForm({ initialData, onSuccess }: ProjectFormProps) {
       }
 
       if (onSuccess) onSuccess()
-      else router.push(`/projects/${projectId}`)
+      else router.push(`/admin/projects/${projectId}`)
     })
   }
 

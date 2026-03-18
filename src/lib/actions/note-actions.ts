@@ -87,7 +87,7 @@ export async function createNote(data: NoteInsert): Promise<{ error?: string; id
   })
 
   await logActivity(user.id, 'note', note.id, 'created')
-  revalidatePath('/learning/notes')
+  revalidatePath('/admin/learning/notes')
   return { id: note.id }
 }
 
@@ -105,8 +105,8 @@ export async function updateNote(id: string, data: Partial<NoteInsert>): Promise
   if (error) return { error: error.message }
 
   await logActivity(user.id, 'note', id, 'updated')
-  revalidatePath('/learning/notes')
-  revalidatePath(`/learning/notes/${id}`)
+  revalidatePath('/admin/learning/notes')
+  revalidatePath(`/admin/learning/notes/${id}`)
   return {}
 }
 
@@ -123,6 +123,6 @@ export async function deleteNote(id: string): Promise<{ error?: string }> {
 
   if (error) return { error: error.message }
 
-  revalidatePath('/learning/notes')
+  revalidatePath('/admin/learning/notes')
   return {}
 }

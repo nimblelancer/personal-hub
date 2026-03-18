@@ -51,7 +51,7 @@ export async function createBookmark(data: BookmarkInsert): Promise<{ error?: st
   if (error) return { error: error.message }
 
   await logActivity(user.id, 'bookmark', bookmark.id, 'created')
-  revalidatePath('/learning/bookmarks')
+  revalidatePath('/admin/learning/bookmarks')
   return { id: bookmark.id }
 }
 
@@ -71,7 +71,7 @@ export async function updateBookmark(
 
   if (error) return { error: error.message }
 
-  revalidatePath('/learning/bookmarks')
+  revalidatePath('/admin/learning/bookmarks')
   return {}
 }
 
@@ -88,6 +88,6 @@ export async function deleteBookmark(id: string): Promise<{ error?: string }> {
 
   if (error) return { error: error.message }
 
-  revalidatePath('/learning/bookmarks')
+  revalidatePath('/admin/learning/bookmarks')
   return {}
 }

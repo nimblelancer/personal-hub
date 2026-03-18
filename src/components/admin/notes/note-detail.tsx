@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -16,9 +17,9 @@ const TOPIC_COLORS: Record<string, string> = {
   'other': 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300',
 }
 
-type Props = { note: NoteWithReview }
+type Props = { note: NoteWithReview; linkedEntities?: ReactNode }
 
-export function NoteDetail({ note }: Props) {
+export function NoteDetail({ note, linkedEntities }: Props) {
   const rs = note.review_schedule
 
   return (
@@ -87,6 +88,8 @@ export function NoteDetail({ note }: Props) {
             )}
           </CardContent>
         </Card>
+
+        {linkedEntities}
 
         <div className="flex gap-2">
           <Link

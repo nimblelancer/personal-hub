@@ -24,7 +24,7 @@ export async function createMilestone(projectId: string, data: MilestoneInsert) 
 
   if (error || !milestone) return { error: error?.message ?? 'Failed to create milestone' }
 
-  revalidatePath(`/projects/${projectId}`)
+  revalidatePath(`/admin/projects/${projectId}`)
   return { data: milestone }
 }
 
@@ -53,7 +53,7 @@ export async function updateMilestone(id: string, data: Partial<MilestoneInsert>
 
   if (error || !milestone) return { error: error?.message ?? 'Failed to update milestone' }
 
-  revalidatePath(`/projects/${existing.project_id}`)
+  revalidatePath(`/admin/projects/${existing.project_id}`)
   return { data: milestone }
 }
 
@@ -80,7 +80,7 @@ export async function deleteMilestone(id: string) {
 
   if (error) return { error: error.message }
 
-  revalidatePath(`/projects/${existing.project_id}`)
+  revalidatePath(`/admin/projects/${existing.project_id}`)
   return { success: true }
 }
 

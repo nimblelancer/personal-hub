@@ -85,7 +85,7 @@ export async function createProject(data: Omit<ProjectInsert, 'user_id'>) {
   })
 
   await logActivity(user.id, 'project', project.id, 'created')
-  revalidatePath('/projects')
+  revalidatePath('/admin/projects')
   return { data: project }
 }
 
@@ -105,8 +105,8 @@ export async function updateProject(id: string, data: Partial<ProjectInsert>) {
   if (error || !project) return { error: error?.message ?? 'Failed to update project' }
 
   await logActivity(user.id, 'project', id, 'updated')
-  revalidatePath('/projects')
-  revalidatePath(`/projects/${id}`)
+  revalidatePath('/admin/projects')
+  revalidatePath(`/admin/projects/${id}`)
   return { data: project }
 }
 
@@ -128,7 +128,7 @@ export async function deleteProject(id: string) {
   if (error) return { error: error.message }
 
   await logActivity(user.id, 'project', id, 'deleted')
-  revalidatePath('/projects')
+  revalidatePath('/admin/projects')
   return { success: true }
 }
 
@@ -145,7 +145,7 @@ export async function updateProjectDoc(projectId: string, content: string) {
     })
 
   if (error) return { error: error.message }
-  revalidatePath(`/projects/${projectId}`)
+  revalidatePath(`/admin/projects/${projectId}`)
   return { success: true }
 }
 
@@ -161,6 +161,6 @@ export async function updateLessonsLearned(projectId: string, content: string) {
     })
 
   if (error) return { error: error.message }
-  revalidatePath(`/projects/${projectId}`)
+  revalidatePath(`/admin/projects/${projectId}`)
   return { success: true }
 }

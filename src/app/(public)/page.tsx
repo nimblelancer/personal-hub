@@ -1,63 +1,81 @@
+import type { Metadata } from 'next'
+import { getPublicProfile, getPublicProjects, getPublicNotes } from '@/lib/actions/profile-actions'
+import { AboutSection } from '@/components/public/about-section'
+import { ProjectShowcaseCard } from '@/components/public/project-showcase-card'
+import { BlogPostCard } from '@/components/public/blog-post-card'
 import Link from 'next/link'
-import { Badge } from '@/components/ui/badge'
-import { ArrowRight, BookOpen, FolderKanban, Layers } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
-const sections = [
-  {
-    icon: BookOpen,
-    label: 'Learning',
-    description: 'Notes, spaced repetition, and curated bookmarks to build lasting knowledge.',
-  },
-  {
-    icon: FolderKanban,
-    label: 'Projects',
-    description: 'Tracking side projects, experiments, and work in progress.',
-  },
-  {
-    icon: Layers,
-    label: 'Portfolio',
-    description: 'A curated view of completed work and shipped things.',
-  },
-]
+export async function generateMetadata(): Promise<Metadata> {
+  const profile = await getPublicProfile()
+  const name = profile?.display_name ?? 'Portfolio'
+  const bio = profile?.bio?.slice(0, 160) ?? 'Personal portfolio and blog.'
 
-export default function PublicHomePage() {
+  return {
+    title: name,
+    description: bio,
+    openGraph: {
+      title: name,
+      description: bio,
+      type: 'website',
+    },
+  }
+}
+
+export default async function PublicHomePage() {
+  const [profile, projects, notes] = await Promise.all([
+    getPublicProfile(),
+    getPublicProjects(),
+    getPublicNotes(),
+  ])
+
+  const featuredProjects = projects.slice(0, 3)
+  const recentPosts = notes.slice(0, 3)
+
   return (
-    <div className="mx-auto max-w-5xl px-4 sm:px-6 py-20 space-y-20">
-      {/* Hero */}
-      <section className="space-y-6 text-center">
-        <Badge variant="secondary" className="text-xs">Personal Hub</Badge>
-        <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight leading-tight">
-          A place for learning,<br className="hidden sm:block" /> building, and sharing.
-        </h1>
-        <p className="text-muted-foreground text-lg max-w-xl mx-auto leading-relaxed">
-          My personal productivity system — where I capture knowledge, track projects,
-          and build in public.
-        </p>
-        <div className="flex items-center justify-center gap-3 flex-wrap">
-          <Link href="/projects" className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors">
-            View Projects <ArrowRight className="h-4 w-4" />
-          </Link>
-          <Link href="/blog" className="inline-flex items-center rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors">
-            Read Blog
-          </Link>
-        </div>
-      </section>
+    <div className="mx-auto max-w-5xl px-4 sm:px-6 py-16 space-y-20">
+      {/* About / Hero */}
+      {profile && <AboutSection profile={profile} />}
 
-      {/* About sections */}
-      <section className="grid gap-6 sm:grid-cols-3">
-        {sections.map((s) => {
-          const Icon = s.icon
-          return (
-            <div key={s.label} className="space-y-3 p-6 rounded-xl border border-border bg-card">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
-                <Icon className="h-5 w-5 text-muted-foreground" />
-              </div>
-              <h2 className="font-semibold text-base">{s.label}</h2>
-              <p className="text-sm text-muted-foreground leading-relaxed">{s.description}</p>
-            </div>
-          )
-        })}
-      </section>
+      {/* Featured projects */}
+      {featuredProjects.length > 0 && (
+        <section className="space-y-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold tracking-tight">Featured Projects</h2>
+            <Link
+              href="/projects"
+              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              All projects <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {featuredProjects.map((project) => (
+              <ProjectShowcaseCard key={project.id} project={project} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Recent blog posts */}
+      {recentPosts.length > 0 && (
+        <section className="space-y-5">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold tracking-tight">Recent Posts</h2>
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              All posts <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+          <div className="flex flex-col gap-4">
+            {recentPosts.map((note) => (
+              <BlogPostCard key={note.id} note={note} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }

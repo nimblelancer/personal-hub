@@ -20,6 +20,7 @@ export interface Database {
           bio: string | null
           avatar_url: string | null
           contact_json: Json
+          resume_content: string | null
           created_at: string
           updated_at: string
         }
@@ -29,6 +30,7 @@ export interface Database {
           bio?: string | null
           avatar_url?: string | null
           contact_json?: Json
+          resume_content?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -38,6 +40,7 @@ export interface Database {
           bio?: string | null
           avatar_url?: string | null
           contact_json?: Json
+          resume_content?: string | null
           created_at?: string
           updated_at?: string
         }
