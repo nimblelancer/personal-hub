@@ -8,7 +8,7 @@
 
 ## Overview
 - **Priority**: P3 — Bonus feature
-- **Status**: Pending
+- **Status**: Completed
 - **Effort**: 3-4 days
 - **Depends on**: Phase 02
 - **Description**: Build the learning roadmap feature — list-based tree with parent/child nesting, status tracking per node, and linking nodes to notes. Multiple roadmaps supported (e.g., AI/ML Roadmap, English Roadmap).
@@ -156,17 +156,17 @@ Progress: 4/10 nodes completed (40%)
 2. Log node status changes (useful for dashboard "recent activity")
 
 ## Todo List
-- [ ] Implement roadmap Server Actions (CRUD for roadmaps + nodes)
-- [ ] Build roadmap list page with progress cards
-- [ ] Build roadmap create/edit form
-- [ ] Build node tree view with collapsible parents
-- [ ] Build node item with status toggle and actions
-- [ ] Build node form dialog (create/edit)
-- [ ] Implement node reordering (move up/down)
-- [ ] Integrate entity linking for nodes → notes
-- [ ] Add progress calculation and display
-- [ ] Add activity logging
-- [ ] Test: create roadmap → add parent/child nodes → toggle status → link notes
+- [x] Implement roadmap Server Actions (CRUD for roadmaps + nodes)
+- [x] Build roadmap list page with progress cards
+- [x] Build roadmap create/edit form
+- [x] Build node tree view with collapsible parents
+- [x] Build node item with status toggle and actions
+- [x] Build node form dialog (create/edit)
+- [x] Implement node reordering (move up/down)
+- [x] Integrate entity linking for nodes → notes
+- [x] Add progress calculation and display
+- [x] Add activity logging
+- [x] Test: create roadmap → add parent/child nodes → toggle status → link notes
 
 ## Success Criteria
 - Can create multiple roadmaps with different topics

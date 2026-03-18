@@ -39,5 +39,29 @@ Personal productivity hub combining learning management, project tracking, and p
 - Zero unhandled auth errors
 - Responsive mobile design
 
+## Key Architectural Decisions
+
+### Single-User Design
+- Scoped to authenticated user via RLS (Row-Level Security)
+- No multi-user collaboration (can be added in future phases)
+- Simplified permission model (all-or-nothing access)
+
+### Entity Linking Pattern
+- Cross-document relationships via `entity_links` table
+- Bidirectional query support (what links TO this note, what this note links TO)
+- Flexible schema supports future entity types
+
+### Spaced Repetition Algorithm
+- SM-2 implementation in `src/lib/review/spaced-repetition.ts`
+- Configurable difficulty ratings (1-5)
+- Automatic next_review scheduling based on performance
+- Supports long-term learning workflows
+
+### Public Portfolio Strategy
+- Visibility-based filtering (not RLS-enforced)
+- Unauthenticated routes render public entities
+- SEO support via sitemap.ts and robots.ts
+- Blog system leverages note markdown storage
+
 ## Version
-v0.1.0 (Phase 01 completed: Project setup, DB schema, core auth)
+v0.2.0 (Phases 01-06 completed: Infrastructure, admin features, cross-linking, dashboard, public portfolio, roadmap)

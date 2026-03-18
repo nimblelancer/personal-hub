@@ -8,7 +8,7 @@
 
 ## Overview
 - **Priority**: P2
-- **Status**: Pending
+- **Status**: Completed
 - **Effort**: 1 week
 - **Depends on**: Phase 02 + Phase 03
 - **Description**: Build the public-facing portfolio — About page, project showcase, blog/TIL from public notes, and static editable Resume page. SSR-optimized for SEO, responsive, minimal design.
@@ -225,19 +225,19 @@ src/components/public/
 5. Typography: readable font sizes, proper line heights
 
 ## Todo List
-- [ ] Add resume_content column to profiles (migration)
-- [ ] Create profile actions and admin settings page
-- [ ] Build public navbar and footer
-- [ ] Build About/Landing page with profile data
-- [ ] Build projects showcase grid page
-- [ ] Build project detail page with docs render
-- [ ] Build blog listing page with topic filter
-- [ ] Build blog post page with syntax highlighting
-- [ ] Build resume page (editable markdown from admin)
-- [ ] Add sitemap.ts and robots.ts
-- [ ] Add generateMetadata to all public pages
-- [ ] Test responsive design on multiple viewports
-- [ ] Verify OG tags and social sharing previews
+- [x] Add resume_content column to profiles (migration)
+- [x] Create profile actions and admin settings page
+- [x] Build public navbar and footer
+- [x] Build About/Landing page with profile data
+- [x] Build projects showcase grid page
+- [x] Build project detail page with docs render
+- [x] Build blog listing page with topic filter
+- [x] Build blog post page with syntax highlighting
+- [x] Build resume page (editable markdown from admin)
+- [x] Add sitemap.ts and robots.ts
+- [x] Add generateMetadata to all public pages
+- [x] Test responsive design on multiple viewports
+- [x] Verify OG tags and social sharing previews
 
 ## Success Criteria
 - All public pages load without auth

@@ -36,9 +36,9 @@ Personal productivity system: private admin dashboard (learning, projects, dashb
 | 1 | [Project Setup](./phase-01-project-setup.md) | 2-3 days | completed |
 | 2 | [Learning Lab](./phase-02-learning-lab.md) | 1.5-2 weeks | completed |
 | 3 | [Project Workshop](./phase-03-project-workshop.md) | 1-1.5 weeks | completed |
-| 4 | [Cross-Linking & Dashboard](./phase-04-cross-linking-dashboard.md) | 1 week | pending |
-| 5 | [Public Portfolio](./phase-05-public-portfolio.md) | 1 week | pending |
-| 6 | [Learning Roadmap](./phase-06-learning-roadmap.md) | 3-4 days | pending |
+| 4 | [Cross-Linking & Dashboard](./phase-04-cross-linking-dashboard.md) | 1 week | completed |
+| 5 | [Public Portfolio](./phase-05-public-portfolio.md) | 1 week | completed |
+| 6 | [Learning Roadmap](./phase-06-learning-roadmap.md) | 3-4 days | completed |
 
 ## Key Dependencies
 - Phase 1 must complete before all others

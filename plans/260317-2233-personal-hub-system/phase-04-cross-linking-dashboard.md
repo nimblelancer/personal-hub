@@ -8,7 +8,7 @@
 
 ## Overview
 - **Priority**: P1
-- **Status**: Pending
+- **Status**: Completed
 - **Effort**: 1 week
 - **Depends on**: Phase 02 + Phase 03
 - **Description**: Build the entity cross-linking system and admin dashboard with widgets for review due, active projects, recent activity, and quick actions.
@@ -179,19 +179,19 @@ dashboard/page.tsx (Server Component)
 2. Add loading states (Suspense boundaries or skeleton)
 
 ## Todo List
-- [ ] Implement entity link Server Actions (CRUD + search)
-- [ ] Build entity link dialog with cross-entity search
-- [ ] Build linked entities list display component
-- [ ] Integrate links into note detail page
-- [ ] Integrate links into project detail page
-- [ ] Implement dashboard data fetching actions
-- [ ] Build review due widget
-- [ ] Build active projects widget
-- [ ] Build recent activity widget
-- [ ] Build quick actions widget
-- [ ] Assemble dashboard page with grid layout
-- [ ] Test: create links between notes and projects, verify bidirectional display
-- [ ] Test: dashboard shows correct counts and data
+- [x] Implement entity link Server Actions (CRUD + search)
+- [x] Build entity link dialog with cross-entity search
+- [x] Build linked entities list display component
+- [x] Integrate links into note detail page
+- [x] Integrate links into project detail page
+- [x] Implement dashboard data fetching actions
+- [x] Build review due widget
+- [x] Build active projects widget
+- [x] Build recent activity widget
+- [x] Build quick actions widget
+- [x] Assemble dashboard page with grid layout
+- [x] Test: create links between notes and projects, verify bidirectional display
+- [x] Test: dashboard shows correct counts and data
 
 ## Success Criteria
 - Can create/delete links between any entity types
