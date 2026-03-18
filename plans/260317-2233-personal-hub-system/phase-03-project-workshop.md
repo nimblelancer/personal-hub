@@ -8,7 +8,7 @@
 
 ## Overview
 - **Priority**: P1 — Core feature
-- **Status**: Pending
+- **Status**: completed
 - **Effort**: 1-1.5 weeks
 - **Depends on**: Phase 01
 - **Description**: Build the Project Workshop — project registry CRUD, auto-generated docs template, milestones tracking, lessons learned log, and kanban/list view.
@@ -213,18 +213,18 @@ Fill this after completing the project.
 2. Actions: 'project_created', 'project_updated', 'project_completed', 'milestone_completed', 'lesson_added'
 
 ## Todo List
-- [ ] Implement project Server Actions (CRUD + filters)
-- [ ] Build project form component
-- [ ] Build kanban view component
-- [ ] Build list view component with filters
-- [ ] Build projects list page with view toggle
-- [ ] Build project detail page with tabs
-- [ ] Implement milestone CRUD (actions + components)
-- [ ] Build lessons learned editor with template
-- [ ] Implement image upload to Supabase Storage
-- [ ] Add completion prompt for lessons learned
-- [ ] Add activity logging to all mutations
-- [ ] Test full flow: create project → edit docs → add milestones → complete → write lessons
+- [x] Implement project Server Actions (CRUD + filters)
+- [x] Build project form component
+- [x] Build kanban view component
+- [x] Build list view component with filters
+- [x] Build projects list page with view toggle
+- [x] Build project detail page with tabs
+- [x] Implement milestone CRUD (actions + components)
+- [x] Build lessons learned editor with template
+- [x] Implement image upload to Supabase Storage
+- [x] Add completion prompt for lessons learned
+- [x] Add activity logging to all mutations
+- [x] Test full flow: create project → edit docs → add milestones → complete → write lessons
 
 ## Success Criteria
 - Can create project and see auto-generated docs template

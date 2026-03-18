@@ -11,6 +11,7 @@ export type EntityType = 'note' | 'project' | 'bookmark' | 'lesson' | 'roadmap_n
 
 export interface Database {
   public: {
+    PostgrestVersion: "12"
     Tables: {
       profiles: {
         Row: {
@@ -31,7 +32,16 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
-        Update: Partial<Database['public']['Tables']['profiles']['Insert']>
+        Update: {
+          id?: string
+          display_name?: string | null
+          bio?: string | null
+          avatar_url?: string | null
+          contact_json?: Json
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       notes: {
         Row: {
@@ -56,7 +66,18 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
-        Update: Partial<Database['public']['Tables']['notes']['Insert']>
+        Update: {
+          id?: string
+          user_id?: string
+          title?: string
+          content?: string
+          topic?: NoteTopicType
+          tags?: string[]
+          visibility?: VisibilityType
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       review_schedule: {
         Row: {
@@ -77,7 +98,16 @@ export interface Database {
           last_reviewed?: string | null
           created_at?: string
         }
-        Update: Partial<Database['public']['Tables']['review_schedule']['Insert']>
+        Update: {
+          id?: string
+          note_id?: string
+          user_id?: string
+          next_review?: string
+          level?: number
+          last_reviewed?: string | null
+          created_at?: string
+        }
+        Relationships: []
       }
       bookmarks: {
         Row: {
@@ -104,7 +134,19 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
-        Update: Partial<Database['public']['Tables']['bookmarks']['Insert']>
+        Update: {
+          id?: string
+          user_id?: string
+          url?: string
+          title?: string
+          description?: string | null
+          tags?: string[]
+          status?: BookmarkStatusType
+          note_id?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       projects: {
         Row: {
@@ -141,46 +183,70 @@ export interface Database {
           created_at?: string
           updated_at?: string
         }
-        Update: Partial<Database['public']['Tables']['projects']['Insert']>
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          type?: ProjectTypeType
+          status?: ProjectStatusType
+          visibility?: VisibilityType
+          one_liner?: string | null
+          tech_stack?: string[]
+          topics?: string[]
+          github_url?: string | null
+          demo_url?: string | null
+          thumbnail_url?: string | null
+          started_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       project_docs: {
         Row: { id: string; project_id: string; content: string; created_at: string; updated_at: string }
         Insert: { id?: string; project_id: string; content?: string; created_at?: string; updated_at?: string }
-        Update: Partial<Database['public']['Tables']['project_docs']['Insert']>
+        Update: { id?: string; project_id?: string; content?: string; created_at?: string; updated_at?: string }
+        Relationships: []
       }
       project_milestones: {
         Row: { id: string; project_id: string; title: string; description: string | null; status: MilestoneStatusType; sort_order: number; deadline: string | null; completed_at: string | null; created_at: string }
         Insert: { id?: string; project_id: string; title: string; description?: string | null; status?: MilestoneStatusType; sort_order?: number; deadline?: string | null; completed_at?: string | null; created_at?: string }
-        Update: Partial<Database['public']['Tables']['project_milestones']['Insert']>
+        Update: { id?: string; project_id?: string; title?: string; description?: string | null; status?: MilestoneStatusType; sort_order?: number; deadline?: string | null; completed_at?: string | null; created_at?: string }
+        Relationships: []
       }
       lessons_learned: {
         Row: { id: string; project_id: string; content: string; created_at: string; updated_at: string }
         Insert: { id?: string; project_id: string; content?: string; created_at?: string; updated_at?: string }
-        Update: Partial<Database['public']['Tables']['lessons_learned']['Insert']>
+        Update: { id?: string; project_id?: string; content?: string; created_at?: string; updated_at?: string }
+        Relationships: []
       }
       roadmaps: {
         Row: { id: string; user_id: string; name: string; description: string | null; topic: NoteTopicType; created_at: string; updated_at: string }
         Insert: { id?: string; user_id: string; name: string; description?: string | null; topic?: NoteTopicType; created_at?: string; updated_at?: string }
-        Update: Partial<Database['public']['Tables']['roadmaps']['Insert']>
+        Update: { id?: string; user_id?: string; name?: string; description?: string | null; topic?: NoteTopicType; created_at?: string; updated_at?: string }
+        Relationships: []
       }
       roadmap_nodes: {
         Row: { id: string; roadmap_id: string; parent_id: string | null; title: string; description: string | null; status: RoadmapNodeStatusType; sort_order: number; created_at: string }
         Insert: { id?: string; roadmap_id: string; parent_id?: string | null; title: string; description?: string | null; status?: RoadmapNodeStatusType; sort_order?: number; created_at?: string }
-        Update: Partial<Database['public']['Tables']['roadmap_nodes']['Insert']>
+        Update: { id?: string; roadmap_id?: string; parent_id?: string | null; title?: string; description?: string | null; status?: RoadmapNodeStatusType; sort_order?: number; created_at?: string }
+        Relationships: []
       }
       entity_links: {
         Row: { id: string; entity_a_type: EntityType; entity_a_id: string; entity_b_type: EntityType; entity_b_id: string; created_at: string }
         Insert: { id?: string; entity_a_type: EntityType; entity_a_id: string; entity_b_type: EntityType; entity_b_id: string; created_at?: string }
-        Update: Partial<Database['public']['Tables']['entity_links']['Insert']>
+        Update: { id?: string; entity_a_type?: EntityType; entity_a_id?: string; entity_b_type?: EntityType; entity_b_id?: string; created_at?: string }
+        Relationships: []
       }
       activity_log: {
         Row: { id: string; user_id: string; entity_type: EntityType; entity_id: string; action: string; created_at: string }
         Insert: { id?: string; user_id: string; entity_type: EntityType; entity_id: string; action: string; created_at?: string }
-        Update: Partial<Database['public']['Tables']['activity_log']['Insert']>
+        Update: { id?: string; user_id?: string; entity_type?: EntityType; entity_id?: string; action?: string; created_at?: string }
+        Relationships: []
       }
     }
-    Views: Record<string, never>
-    Functions: Record<string, never>
+    Views: { [_ in never]: never }
+    Functions: { [_ in never]: never }
     Enums: {
       note_topic: NoteTopicType
       visibility_type: VisibilityType
@@ -191,5 +257,6 @@ export interface Database {
       roadmap_node_status: RoadmapNodeStatusType
       entity_type: EntityType
     }
+    CompositeTypes: { [_ in never]: never }
   }
 }

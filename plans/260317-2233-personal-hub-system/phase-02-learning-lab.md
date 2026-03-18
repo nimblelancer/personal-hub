@@ -7,7 +7,7 @@
 
 ## Overview
 - **Priority**: P1 — Core feature
-- **Status**: Pending
+- **Status**: completed
 - **Effort**: 1.5-2 weeks
 - **Depends on**: Phase 01
 - **Description**: Build the Learning Lab module — TIL notes CRUD with markdown editor, tag/topic system, search/filter, spaced repetition review queue, and resource bookmarks.
@@ -210,18 +210,18 @@ function calculateNextReview(currentLevel: number, rating: 'remember' | 'fuzzy' 
 4. Actions: 'created', 'updated', 'deleted', 'reviewed'
 
 ## Todo List
-- [ ] Build markdown editor (split-pane textarea + react-markdown)
-- [ ] Implement note Server Actions (CRUD + filters + search)
-- [ ] Build note form component (create/edit)
-- [ ] Build notes list page with filters and search
-- [ ] Build note detail page with sidebar metadata
-- [ ] Build note edit page
-- [ ] Implement spaced repetition calculation logic
-- [ ] Build review queue page and review card component
-- [ ] Implement review Server Actions
-- [ ] Build bookmarks CRUD (form, list, actions)
-- [ ] Add activity logging to all mutations
-- [ ] Test full flow: create note → appears in review queue next day → review → level up
+- [x] Build markdown editor (split-pane textarea + react-markdown)
+- [x] Implement note Server Actions (CRUD + filters + search)
+- [x] Build note form component (create/edit)
+- [x] Build notes list page with filters and search
+- [x] Build note detail page with sidebar metadata
+- [x] Build note edit page
+- [x] Implement spaced repetition calculation logic
+- [x] Build review queue page and review card component
+- [x] Implement review Server Actions
+- [x] Build bookmarks CRUD (form, list, actions)
+- [x] Add activity logging to all mutations
+- [x] Test full flow: create note → appears in review queue next day → review → level up
 
 ## Success Criteria
 - Can create/edit/delete notes with markdown content

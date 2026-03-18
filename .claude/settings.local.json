@@ -14,7 +14,14 @@
       "Bash(npm run:*)",
       "Bash(find /home/nimblelancer/personal-hub/src -type f -name *.test.* -o -name *.spec.*)",
       "Bash(npx tsc:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git config:*)",
+      "Bash(find /home/nimblelancer/personal-hub/src -newer /home/nimblelancer/personal-hub/src/middleware.ts -name *.ts -o -name *.tsx)",
+      "Bash(claude remote-control:*)",
+      "Bash(npm list:*)",
+      "Bash(npx next:*)",
+      "Bash(npx eslint:*)"
     ]
   }
 }
