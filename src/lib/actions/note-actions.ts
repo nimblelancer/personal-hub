@@ -3,6 +3,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { logActivity } from './activity-actions'
 import { addDays } from '@/lib/review/spaced-repetition'
+import { CreateNoteSchema, UpdateNoteSchema } from '@/lib/validations/note-schemas'
 import type { NoteInsert, NoteFilters, NoteWithReview } from '@/types/index'
 
 export async function getNotes(filters: NoteFilters = {}): Promise<{ notes: NoteWithReview[]; total: number }> {
@@ -66,63 +67,81 @@ export async function getNote(id: string): Promise<NoteWithReview | null> {
 }
 
 export async function createNote(data: NoteInsert): Promise<{ error?: string; id?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  const parsed = CreateNoteSchema.safeParse(data)
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input' }
 
-  const { data: note, error } = await supabase
-    .from('notes')
-    .insert({ ...data, user_id: user.id })
-    .select()
-    .single()
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  if (error) return { error: error.message }
+    const { data: note, error } = await supabase
+      .from('notes')
+      .insert({ ...data, user_id: user.id })
+      .select()
+      .single()
 
-  // Create initial review schedule — next review tomorrow
-  await supabase.from('review_schedule').insert({
-    note_id: note.id,
-    user_id: user.id,
-    next_review: addDays(1),
-    level: 0,
-  })
+    if (error) return { error: error.message }
 
-  await logActivity(user.id, 'note', note.id, 'created')
-  revalidatePath('/admin/learning/notes')
-  return { id: note.id }
+    // Create initial review schedule — next review tomorrow
+    await supabase.from('review_schedule').insert({
+      note_id: note.id,
+      user_id: user.id,
+      next_review: addDays(1),
+      level: 0,
+    })
+
+    await logActivity(user.id, 'note', note.id, 'created')
+    revalidatePath('/admin/learning/notes')
+    return { id: note.id }
+  } catch {
+    return { error: 'Failed to create note' }
+  }
 }
 
 export async function updateNote(id: string, data: Partial<NoteInsert>): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  const parsed = UpdateNoteSchema.safeParse(data)
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input' }
 
-  const { error } = await supabase
-    .from('notes')
-    .update({ ...data, updated_at: new Date().toISOString() })
-    .eq('id', id)
-    .eq('user_id', user.id)
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  if (error) return { error: error.message }
+    const { error } = await supabase
+      .from('notes')
+      .update({ ...data, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .eq('user_id', user.id)
 
-  await logActivity(user.id, 'note', id, 'updated')
-  revalidatePath('/admin/learning/notes')
-  revalidatePath(`/admin/learning/notes/${id}`)
-  return {}
+    if (error) return { error: error.message }
+
+    await logActivity(user.id, 'note', id, 'updated')
+    revalidatePath('/admin/learning/notes')
+    revalidatePath(`/admin/learning/notes/${id}`)
+    return {}
+  } catch {
+    return { error: 'Failed to update note' }
+  }
 }
 
 export async function deleteNote(id: string): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  const { error } = await supabase
-    .from('notes')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', user.id)
+    const { error } = await supabase
+      .from('notes')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id)
 
-  if (error) return { error: error.message }
+    if (error) return { error: error.message }
 
-  revalidatePath('/admin/learning/notes')
-  return {}
+    revalidatePath('/admin/learning/notes')
+    return {}
+  } catch {
+    return { error: 'Failed to delete note' }
+  }
 }

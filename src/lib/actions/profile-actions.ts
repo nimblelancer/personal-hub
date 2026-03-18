@@ -1,6 +1,7 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { UpdateProfileSchema } from '@/lib/validations/profile-schemas'
 import type { Profile, Project, Note } from '@/types/index'
 import type { Json } from '@/types/database'
 
@@ -51,19 +52,26 @@ export async function updateProfile(data: {
   contact_json?: Json
   resume_content?: string | null
 }): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  const parsed = UpdateProfileSchema.safeParse(data)
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input' }
 
-  const { error } = await supabase
-    .from('profiles')
-    .update({ ...data, updated_at: new Date().toISOString() })
-    .eq('id', user.id)
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  if (error) return { error: error.message }
+    const { error } = await supabase
+      .from('profiles')
+      .update({ ...data, updated_at: new Date().toISOString() })
+      .eq('id', user.id)
 
-  revalidatePath('/')
-  revalidatePath('/resume')
-  revalidatePath('/admin/settings')
-  return {}
+    if (error) return { error: error.message }
+
+    revalidatePath('/')
+    revalidatePath('/resume')
+    revalidatePath('/admin/settings')
+    return {}
+  } catch {
+    return { error: 'Failed to update profile' }
+  }
 }

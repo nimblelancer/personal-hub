@@ -2,17 +2,9 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { logActivity } from '@/lib/actions/activity-actions'
+import { CreateRoadmapSchema, UpdateRoadmapSchema } from '@/lib/validations/roadmap-schemas'
 import type { RoadmapInsert, RoadmapWithStats, Roadmap, RoadmapNode } from '@/types/index'
 import type { NoteTopicType, RoadmapNodeStatusType } from '@/types/database'
-
-// Re-export node actions for backward compatibility
-export {
-  createNode,
-  updateNode,
-  deleteNode,
-  updateNodeStatus,
-  reorderNodes,
-} from '@/lib/actions/roadmap-node-actions'
 
 // ── Roadmap CRUD ──────────────────────────────────────────────────────────────
 
@@ -84,28 +76,35 @@ export async function createRoadmap(data: {
   description?: string
   topic?: NoteTopicType
 }): Promise<{ error?: string; id?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  const parsed = CreateRoadmapSchema.safeParse(data)
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input' }
 
-  const insert: RoadmapInsert = {
-    user_id: user.id,
-    name: data.name,
-    description: data.description ?? null,
-    topic: data.topic ?? 'other',
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
+
+    const insert: RoadmapInsert = {
+      user_id: user.id,
+      name: data.name,
+      description: data.description ?? null,
+      topic: data.topic ?? 'other',
+    }
+
+    const { data: roadmap, error } = await supabase
+      .from('roadmaps')
+      .insert(insert)
+      .select()
+      .single()
+
+    if (error || !roadmap) return { error: error?.message ?? 'Failed to create roadmap' }
+
+    await logActivity(user.id, 'roadmap_node', roadmap.id, 'roadmap_created')
+    revalidatePath('/admin/learning/roadmap')
+    return { id: roadmap.id }
+  } catch {
+    return { error: 'Failed to create roadmap' }
   }
-
-  const { data: roadmap, error } = await supabase
-    .from('roadmaps')
-    .insert(insert)
-    .select()
-    .single()
-
-  if (error || !roadmap) return { error: error?.message ?? 'Failed to create roadmap' }
-
-  await logActivity(user.id, 'roadmap_node', roadmap.id, 'roadmap_created')
-  revalidatePath('/admin/learning/roadmap')
-  return { id: roadmap.id }
 }
 
 export async function updateRoadmap(id: string, data: {
@@ -113,38 +112,49 @@ export async function updateRoadmap(id: string, data: {
   description?: string | null
   topic?: NoteTopicType
 }): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  const parsed = UpdateRoadmapSchema.safeParse(data)
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input' }
 
-  const { error } = await supabase
-    .from('roadmaps')
-    .update({ ...data, updated_at: new Date().toISOString() })
-    .eq('id', id)
-    .eq('user_id', user.id)
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  if (error) return { error: error.message }
+    const { error } = await supabase
+      .from('roadmaps')
+      .update({ ...data, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .eq('user_id', user.id)
 
-  await logActivity(user.id, 'roadmap_node', id, 'roadmap_updated')
-  revalidatePath('/admin/learning/roadmap')
-  revalidatePath(`/admin/learning/roadmap/${id}`)
-  return {}
+    if (error) return { error: error.message }
+
+    await logActivity(user.id, 'roadmap_node', id, 'roadmap_updated')
+    revalidatePath('/admin/learning/roadmap')
+    revalidatePath(`/admin/learning/roadmap/${id}`)
+    return {}
+  } catch {
+    return { error: 'Failed to update roadmap' }
+  }
 }
 
 export async function deleteRoadmap(id: string): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  const { error } = await supabase
-    .from('roadmaps')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', user.id)
+    const { error } = await supabase
+      .from('roadmaps')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id)
 
-  if (error) return { error: error.message }
+    if (error) return { error: error.message }
 
-  await logActivity(user.id, 'roadmap_node', id, 'roadmap_deleted')
-  revalidatePath('/admin/learning/roadmap')
-  return {}
+    await logActivity(user.id, 'roadmap_node', id, 'roadmap_deleted')
+    revalidatePath('/admin/learning/roadmap')
+    return {}
+  } catch {
+    return { error: 'Failed to delete roadmap' }
+  }
 }

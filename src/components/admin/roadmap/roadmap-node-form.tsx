@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { createNode, updateNode } from '@/lib/actions/roadmap-actions'
+import { createNode, updateNode } from '@/lib/actions/roadmap-node-actions'
 import type { RoadmapNode } from '@/types/index'
 import type { RoadmapNodeStatusType } from '@/types/database'
 

@@ -1,6 +1,7 @@
 'use server'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
+import { MilestoneSchema, UpdateMilestoneSchema } from '@/lib/validations/roadmap-schemas'
 import type { MilestoneStatusType } from '@/types/database'
 
 type MilestoneInsert = {
@@ -12,76 +13,94 @@ type MilestoneInsert = {
 }
 
 export async function createMilestone(projectId: string, data: MilestoneInsert) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  const parsed = MilestoneSchema.safeParse(data)
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input' }
 
-  const { data: milestone, error } = await supabase
-    .from('project_milestones')
-    .insert({ ...data, project_id: projectId })
-    .select()
-    .single()
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  if (error || !milestone) return { error: error?.message ?? 'Failed to create milestone' }
+    const { data: milestone, error } = await supabase
+      .from('project_milestones')
+      .insert({ ...data, project_id: projectId })
+      .select()
+      .single()
 
-  revalidatePath(`/admin/projects/${projectId}`)
-  return { data: milestone }
+    if (error || !milestone) return { error: error?.message ?? 'Failed to create milestone' }
+
+    revalidatePath(`/admin/projects/${projectId}`)
+    return { data: milestone }
+  } catch {
+    return { error: 'Failed to create milestone' }
+  }
 }
 
 export async function updateMilestone(id: string, data: Partial<MilestoneInsert>) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  const parsed = UpdateMilestoneSchema.safeParse(data)
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? 'Invalid input' }
 
-  // Verify ownership via project join before updating
-  const { data: existing } = await supabase
-    .from('project_milestones')
-    .select('project_id, projects!inner(user_id)')
-    .eq('id', id)
-    .single()
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  const raw = existing as Record<string, unknown> | null
-  const project = raw?.projects as { user_id: string } | null
-  if (!existing || project?.user_id !== user.id) return { error: 'Unauthorized' }
+    // Verify ownership via project join before updating
+    const { data: existing } = await supabase
+      .from('project_milestones')
+      .select('project_id, projects!inner(user_id)')
+      .eq('id', id)
+      .single()
 
-  const { data: milestone, error } = await supabase
-    .from('project_milestones')
-    .update(data)
-    .eq('id', id)
-    .select()
-    .single()
+    const raw = existing as Record<string, unknown> | null
+    const project = raw?.projects as { user_id: string } | null
+    if (!existing || project?.user_id !== user.id) return { error: 'Unauthorized' }
 
-  if (error || !milestone) return { error: error?.message ?? 'Failed to update milestone' }
+    const { data: milestone, error } = await supabase
+      .from('project_milestones')
+      .update(data)
+      .eq('id', id)
+      .select()
+      .single()
 
-  revalidatePath(`/admin/projects/${existing.project_id}`)
-  return { data: milestone }
+    if (error || !milestone) return { error: error?.message ?? 'Failed to update milestone' }
+
+    revalidatePath(`/admin/projects/${existing.project_id}`)
+    return { data: milestone }
+  } catch {
+    return { error: 'Failed to update milestone' }
+  }
 }
 
 export async function deleteMilestone(id: string) {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Unauthorized' }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: 'Unauthorized' }
 
-  // Verify ownership before deleting
-  const { data: existing } = await supabase
-    .from('project_milestones')
-    .select('project_id, projects!inner(user_id)')
-    .eq('id', id)
-    .single()
+    // Verify ownership before deleting
+    const { data: existing } = await supabase
+      .from('project_milestones')
+      .select('project_id, projects!inner(user_id)')
+      .eq('id', id)
+      .single()
 
-  const raw = existing as Record<string, unknown> | null
-  const project = raw?.projects as { user_id: string } | null
-  if (!existing || project?.user_id !== user.id) return { error: 'Unauthorized' }
+    const raw = existing as Record<string, unknown> | null
+    const project = raw?.projects as { user_id: string } | null
+    if (!existing || project?.user_id !== user.id) return { error: 'Unauthorized' }
 
-  const { error } = await supabase
-    .from('project_milestones')
-    .delete()
-    .eq('id', id)
+    const { error } = await supabase
+      .from('project_milestones')
+      .delete()
+      .eq('id', id)
 
-  if (error) return { error: error.message }
+    if (error) return { error: error.message }
 
-  revalidatePath(`/admin/projects/${existing.project_id}`)
-  return { success: true }
+    revalidatePath(`/admin/projects/${existing.project_id}`)
+    return { success: true }
+  } catch {
+    return { error: 'Failed to delete milestone' }
+  }
 }
 
 const STATUS_CYCLE: Record<MilestoneStatusType, MilestoneStatusType> = {

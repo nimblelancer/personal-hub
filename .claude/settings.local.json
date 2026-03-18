@@ -27,7 +27,14 @@
       "Bash(ls \"src/app/\\(admin\\)/admin/projects/\")",
       "Bash(find \"src/app/\\(admin\\)/admin/\" -name \"*.tsx\")",
       "Bash(grep -rn \"href=\"\"/learning\\\\|href=\"\"/projects\\\\|href=\"\"/dashboard\\\\|href=\"\"/settings\\\\|href={\\\\`/learning\\\\|href={\\\\`/projects\\\\|href={\\\\`/dashboard\\\\|href={\\\\`/settings\" src/components/admin/ src/app/ --include=\"*.tsx\")",
-      "Bash(grep -rn \"href=\"\"/projects\\\\|href=\"\"/learning\\\\|href=\"\"/dashboard\\\\|href={\\\\`/projects\\\\|href={\\\\`/learning\" \"src/app/\\(admin\\)/\" --include=\"*.tsx\")"
+      "Bash(grep -rn \"href=\"\"/projects\\\\|href=\"\"/learning\\\\|href=\"\"/dashboard\\\\|href={\\\\`/projects\\\\|href={\\\\`/learning\" \"src/app/\\(admin\\)/\" --include=\"*.tsx\")",
+      "Bash(wc -l /home/nimblelancer/personal-hub/src/lib/actions/*.ts)",
+      "Bash(find /home/nimblelancer/personal-hub/src/app -name \"page.tsx\" -exec wc -l {} +)",
+      "Bash(find /home/nimblelancer/personal-hub/src/components -name \"*.tsx\" -exec wc -l {} +)",
+      "Bash(xargs cat:*)",
+      "Bash(git merge:*)",
+      "Bash(grep -r \"from ''@/lib/actions/roadmap-actions''\" /home/nimblelancer/personal-hub/src --include=\"*.ts\" --include=\"*.tsx\" -l)",
+      "Bash(grep -n \"from ''@/lib/actions/roadmap-actions''\" /home/nimblelancer/personal-hub/src/components/admin/roadmap/roadmap-node-form.tsx /home/nimblelancer/personal-hub/src/components/admin/roadmap/roadmap-detail-actions.tsx /home/nimblelancer/personal-hub/src/components/admin/roadmap/roadmap-form.tsx /home/nimblelancer/personal-hub/src/app/\\\\\\(admin\\\\\\)/admin/learning/roadmap/page.tsx /home/nimblelancer/personal-hub/src/app/\\\\\\(admin\\\\\\)/admin/learning/roadmap/[id]/page.tsx)"
     ]
   }
 }
