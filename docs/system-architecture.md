@@ -100,13 +100,20 @@ Protected by middleware. Redirects unauthenticated users to `/login`.
 
 ## Authentication Flow
 
-### Middleware (`src/lib/supabase/middleware.ts`)
+### Middleware (`src/middleware.ts`)
 1. Request arrives → `updateSession()`
 2. Supabase SSR client checks session cookies
 3. `getUser()` returns authenticated user or null
-4. Admin routes (`/dashboard`, `/learning`, `/projects`) require user
-5. Unauthenticated → Redirect to `/login`
-6. Authenticated → Continue
+4. Rate limiting check: `/login` route limited to 5 requests per 60 seconds per IP
+5. Admin routes (`/dashboard`, `/learning`, `/projects`) require user
+6. Unauthenticated → Redirect to `/login`
+7. Authenticated → Continue
+
+### Security: Rate Limiting (`src/lib/rate-limiter.ts`)
+- **In-memory IP-based rate limiter**: Tracks request count per IP address
+- **Login protection**: 5 requests per 60-second window per IP
+- **No external dependencies**: Lightweight implementation suitable for single-instance deployments
+- **Auto-reset**: Window resets after duration expires
 
 ### Session Management
 - Cookies managed by Supabase SSR client

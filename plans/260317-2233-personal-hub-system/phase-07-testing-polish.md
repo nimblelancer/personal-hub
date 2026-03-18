@@ -1,13 +1,13 @@
 ---
 title: "Phase 7 — Testing & Polish"
 description: "Split oversized files, add input validation, error handling, fix N+1, add tests and Suspense"
-status: in_progress
+status: completed
 priority: P1
 effort: 3-4 days
 branch: master
 tags: [testing, security, refactoring, performance]
 created: 2026-03-18
-progress: "60% (P0+P1 done, P2 pending)"
+progress: "100% (all phases complete)"
 ---
 
 # Phase 7 — Testing & Polish
@@ -170,10 +170,10 @@ Hardening pass: enforce dev rules (<200 lines), add input validation, consistent
 - [x] Write unit tests for note/project/review actions (~100 test cases)
 - [x] Add Suspense boundaries to dashboard + detail pages
 
-### P2 — E2E & Rate Limiting (PENDING FOR NEXT SESSION)
-- [ ] Install Playwright, write auth + CRUD E2E tests
-- [ ] Add rate limiting to auth routes
-- [ ] Verify build passes with 0 TS errors after all changes
+### P2 — E2E & Rate Limiting (COMPLETED)
+- [x] Install Playwright, write auth + CRUD E2E tests
+- [x] Add rate limiting to auth routes
+- [x] Verify build passes with 0 TS errors after all changes
 
 ## Success Criteria
 
