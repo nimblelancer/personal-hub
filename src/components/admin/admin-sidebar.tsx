@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Menu, Layers } from 'lucide-react'
+import { Menu, Layers, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { AdminSidebarNav } from './admin-sidebar-nav'
+import { useSearch } from './admin-search-provider'
 
 function SidebarLogo() {
   return (
@@ -18,6 +19,29 @@ function SidebarLogo() {
       </div>
       <span className="font-semibold text-sm tracking-tight">Personal Hub</span>
     </Link>
+  )
+}
+
+function SearchTrigger() {
+  const { openSearch } = useSearch()
+  // Detect platform post-hydration to avoid SSR mismatch
+  const [isMac, setIsMac] = useState(true)
+  useEffect(() => {
+    setIsMac(/Mac|iPhone|iPad/.test(navigator.platform))
+  }, [])
+
+  return (
+    <button
+      onClick={openSearch}
+      className="mx-3 my-2 flex items-center gap-2 rounded-md border border-border bg-muted/40 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      aria-label="Open search"
+    >
+      <Search className="h-3.5 w-3.5 shrink-0" />
+      <span className="hidden md:inline flex-1 text-left">Search...</span>
+      <kbd className="hidden md:inline-flex items-center gap-0.5 rounded border border-border bg-background px-1.5 py-0.5 text-xs font-mono text-muted-foreground">
+        {isMac ? '⌘K' : 'Ctrl+K'}
+      </kbd>
+    </button>
   )
 }
 
@@ -44,6 +68,7 @@ export function AdminSidebar() {
             <SheetTitle>Navigation</SheetTitle>
           </SheetHeader>
           <SidebarLogo />
+          <SearchTrigger />
           <AdminSidebarNav onNavigate={() => setOpen(false)} />
         </SheetContent>
       </Sheet>
@@ -51,6 +76,7 @@ export function AdminSidebar() {
       {/* Desktop: fixed sidebar */}
       <aside className="hidden md:flex fixed inset-y-0 left-0 z-40 w-60 flex-col border-r border-border bg-sidebar">
         <SidebarLogo />
+        <SearchTrigger />
         <AdminSidebarNav />
       </aside>
     </>

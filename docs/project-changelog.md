@@ -2,6 +2,26 @@
 
 All notable changes to the personal-hub project are documented here.
 
+## Version 1.0.1 — Global Search & Navigation (2026-03-22)
+
+### Global Search ⌘K Command Palette
+- **New feature**: Global command palette accessible via Ctrl+K or ⌘K from anywhere in admin
+  - Multi-entity search: notes (title+content), bookmarks (title+url), projects (name+one_liner), roadmaps (name+description)
+  - Returns up to 5 results per entity type (20 total) grouped by category
+  - 300ms debounce, minimum 2 character query
+  - Navigate search results with arrow keys, select with enter or mouse click
+  - Close with ESC key
+- **New files**:
+  - `src/components/ui/command.tsx` — Command palette UI primitive (cmdk integration)
+  - `src/lib/actions/global-search-actions.ts` — Multi-entity search server action
+  - `src/components/admin/global-search-palette.tsx` — Command palette component
+  - `src/components/admin/admin-search-provider.tsx` — Search context provider
+- **Modified files**:
+  - `src/components/admin/admin-sidebar.tsx` — Added keyboard shortcut indicator
+  - `src/app/(admin)/admin/layout.tsx` — Integrated search provider
+
+---
+
 ## Version 1.0.0 — Phase 07 P2 Complete (2026-03-18)
 
 ### Testing & E2E Coverage
