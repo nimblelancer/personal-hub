@@ -12,9 +12,9 @@ const ENTITY_ICON: Record<string, ReactNode> = {
 }
 
 function entityHref(type: string, id: string): string {
-  if (type === 'note') return `/learning/notes/${id}`
-  if (type === 'project') return `/projects/${id}`
-  if (type === 'bookmark') return `/learning/bookmarks`
+  if (type === 'note') return `/admin/learning/notes/${id}`
+  if (type === 'project') return `/admin/projects/${id}`
+  if (type === 'bookmark') return `/admin/learning/bookmarks`
   return '#'
 }
 
@@ -35,10 +35,13 @@ interface RecentActivityWidgetProps {
 
 export function RecentActivityWidget({ activities }: RecentActivityWidgetProps) {
   return (
-    <Card className="sm:col-span-2">
+    <Card className="sm:col-span-2 bg-card/60 backdrop-blur-sm border-border dark:border-white/10 hover:border-[oklch(0.65_0.16_200_/_0.3)] hover:shadow-lg transition-all">
       <CardHeader className="pb-2">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted text-muted-foreground">
+          <div
+            className="flex h-8 w-8 items-center justify-center rounded-md"
+            style={{ background: 'oklch(0.65 0.16 200 / 0.15)', color: 'oklch(0.65 0.16 200)' }}
+          >
             <Clock className="size-4" />
           </div>
           <CardTitle className="text-sm font-medium">Recent Activity</CardTitle>

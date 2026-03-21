@@ -65,7 +65,10 @@ export default async function DashboardPage() {
     <div className="space-y-6 max-w-4xl">
       {/* Greeting */}
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1
+          className="text-2xl font-semibold tracking-tight bg-clip-text text-transparent"
+          style={{ backgroundImage: 'linear-gradient(to right, oklch(0.60 0.18 165), oklch(0.65 0.16 200))' }}
+        >
           {getGreeting()}
         </h1>
         <p className="text-muted-foreground mt-1 text-sm">{formatDate()}</p>

@@ -17,10 +17,13 @@ interface ActiveProjectsWidgetProps {
 
 export function ActiveProjectsWidget({ projects }: ActiveProjectsWidgetProps) {
   return (
-    <Card>
+    <Card className="bg-card/60 backdrop-blur-sm border-border dark:border-white/10 hover:border-[oklch(0.60_0.18_165_/_0.3)] hover:shadow-lg transition-all">
       <CardHeader className="pb-2">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
+          <div
+            className="flex h-8 w-8 items-center justify-center rounded-md"
+            style={{ background: 'oklch(0.60 0.18 165 / 0.15)', color: 'oklch(0.60 0.18 165)' }}
+          >
             <Folder className="size-4" />
           </div>
           <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
@@ -35,12 +38,12 @@ export function ActiveProjectsWidget({ projects }: ActiveProjectsWidgetProps) {
             {projects.map((project) => (
               <li key={project.id}>
                 <Link
-                  href={`/projects/${project.id}`}
+                  href={`/admin/projects/${project.id}`}
                   className="flex items-start justify-between gap-2 rounded-md p-1.5 hover:bg-muted transition-colors group"
                 >
                   <div className="flex-1 min-w-0 space-y-0.5">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-sm font-medium truncate group-hover:text-primary">
+                      <span className="text-sm font-medium truncate group-hover:underline">
                         {project.name}
                       </span>
                       <span
@@ -68,8 +71,9 @@ export function ActiveProjectsWidget({ projects }: ActiveProjectsWidgetProps) {
         )}
 
         <Link
-          href="/projects"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+          href="/admin/projects"
+          className="inline-flex items-center gap-1.5 text-xs font-medium hover:underline"
+          style={{ color: 'oklch(0.60 0.18 165)' }}
         >
           View All Projects →
         </Link>

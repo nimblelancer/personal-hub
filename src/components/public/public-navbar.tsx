@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { Menu } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
 
@@ -31,21 +32,38 @@ export function PublicNavbar({ displayName }: { displayName?: string | null }) {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden sm:flex items-center gap-6">
-          {navLinks.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className={cn(
-                'text-sm transition-colors',
-                isActive(href)
-                  ? 'text-foreground font-medium'
-                  : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              {label}
-            </Link>
-          ))}
+        <nav className="hidden sm:flex items-center gap-1">
+          {navLinks.map(({ href, label }) => {
+            const active = isActive(href)
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  'relative px-3 py-1.5 text-sm rounded-md transition-colors',
+                  active ? 'text-foreground font-medium' : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {active && (
+                  <motion.span
+                    layoutId="nav-pill"
+                    className="absolute inset-0 rounded-md"
+                    style={{ background: 'oklch(0.60 0.18 165 / 0.12)' }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{label}</span>
+                {active && (
+                  <motion.span
+                    layoutId="nav-underline"
+                    className="absolute bottom-0 left-3 right-3 h-0.5 rounded-full"
+                    style={{ background: 'oklch(0.60 0.18 165)' }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+              </Link>
+            )
+          })}
         </nav>
 
         {/* Mobile hamburger */}
@@ -66,9 +84,13 @@ export function PublicNavbar({ displayName }: { displayName?: string | null }) {
                   className={cn(
                     'px-3 py-2 rounded-md text-sm transition-colors',
                     isActive(href)
-                      ? 'bg-primary text-primary-foreground font-medium'
+                      ? 'font-medium'
                       : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                   )}
+                  style={isActive(href) ? {
+                    background: 'oklch(0.60 0.18 165 / 0.12)',
+                    color: 'oklch(0.60 0.18 165)',
+                  } : {}}
                 >
                   {label}
                 </Link>
