@@ -31,7 +31,7 @@ export default async function PublicLayout({
         />
       </div>
 
-      <PublicNavbar displayName={profile?.display_name} />
+      <PublicNavbar />
       <main className="relative z-10 flex-1">
         {children}
       </main>

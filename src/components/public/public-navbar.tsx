@@ -14,7 +14,7 @@ const navLinks = [
   { href: '/resume', label: 'Resume' },
 ]
 
-export function PublicNavbar({ displayName }: { displayName?: string | null }) {
+export function PublicNavbar() {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
 
@@ -28,7 +28,7 @@ export function PublicNavbar({ displayName }: { displayName?: string | null }) {
       <div className="mx-auto max-w-5xl px-4 sm:px-6 flex h-14 items-center justify-between">
         {/* Logo */}
         <Link href="/" className="font-semibold text-sm tracking-tight hover:text-foreground/80 transition-colors">
-          {displayName ?? 'Portfolio'}
+          Portfolio
         </Link>
 
         {/* Desktop nav */}
