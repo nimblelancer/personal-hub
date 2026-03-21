@@ -9,6 +9,15 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import type { Profile } from '@/types/index'
 
+// Convert Google Drive share links to direct image URLs
+// Input:  https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+// Output: https://lh3.googleusercontent.com/d/FILE_ID
+function normalizeAvatarUrl(url: string): string {
+  const match = url.match(/drive\.google\.com\/file\/d\/([^/]+)/)
+  if (match) return `https://lh3.googleusercontent.com/d/${match[1]}`
+  return url
+}
+
 function jsonToString(val: unknown): string {
   if (typeof val === 'string') return val
   if (val === null || val === undefined) return ''
@@ -39,7 +48,7 @@ export function ProfileForm({ profile }: { profile: Profile }) {
     startTransition(async () => {
       const result = await updateProfile({
         display_name: displayName || null,
-        avatar_url: avatarUrl || null,
+        avatar_url: avatarUrl ? normalizeAvatarUrl(avatarUrl) : null,
         bio: bio || null,
         contact_json: parsedContact as import('@/types/database').Json,
         resume_content: resumeContent || null,
