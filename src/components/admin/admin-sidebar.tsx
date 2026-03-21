@@ -9,9 +9,12 @@ import { AdminSidebarNav } from './admin-sidebar-nav'
 
 function SidebarLogo() {
   return (
-    <Link href="/dashboard" className="flex items-center gap-2 px-3 py-4 border-b border-border">
-      <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
-        <Layers className="h-4 w-4" />
+    <Link href="/admin/dashboard" className="flex items-center gap-2.5 px-4 py-4 border-b border-border">
+      <div
+        className="flex h-7 w-7 items-center justify-center rounded-lg shrink-0"
+        style={{ background: 'linear-gradient(135deg, oklch(0.60 0.18 165), oklch(0.65 0.16 200))' }}
+      >
+        <Layers className="h-4 w-4 text-white" />
       </div>
       <span className="font-semibold text-sm tracking-tight">Personal Hub</span>
     </Link>

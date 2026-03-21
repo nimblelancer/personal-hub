@@ -11,17 +11,23 @@ interface ReviewDueWidgetProps {
 
 export function ReviewDueWidget({ count, preview }: ReviewDueWidgetProps) {
   return (
-    <Card>
+    <Card className="bg-card/60 backdrop-blur-sm border-border dark:border-white/10 hover:border-[oklch(0.60_0.18_165_/_0.3)] hover:shadow-lg transition-all">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-orange-100 text-orange-600 dark:bg-orange-900/30 dark:text-orange-400">
+            <div
+              className="flex h-8 w-8 items-center justify-center rounded-md"
+              style={{ background: 'oklch(0.60 0.18 165 / 0.15)', color: 'oklch(0.60 0.18 165)' }}
+            >
               <Brain className="size-4" />
             </div>
             <CardTitle className="text-sm font-medium">Review Queue</CardTitle>
           </div>
           {count > 0 && (
-            <span className="inline-flex items-center rounded-full bg-orange-100 px-2 py-0.5 text-xs font-semibold text-orange-700 dark:bg-orange-900/30 dark:text-orange-400">
+            <span
+              className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold"
+              style={{ background: 'oklch(0.60 0.18 165 / 0.15)', color: 'oklch(0.60 0.18 165)' }}
+            >
               {count}
             </span>
           )}
@@ -43,7 +49,7 @@ export function ReviewDueWidget({ count, preview }: ReviewDueWidgetProps) {
               {preview.map((note) => (
                 <li key={note.noteId}>
                   <Link
-                    href={`/learning/notes/${note.noteId}`}
+                    href={`/admin/learning/notes/${note.noteId}`}
                     className="flex items-center justify-between gap-2 text-sm hover:underline text-foreground/80 hover:text-foreground"
                   >
                     <span className="truncate">{note.title}</span>
@@ -60,8 +66,9 @@ export function ReviewDueWidget({ count, preview }: ReviewDueWidgetProps) {
         )}
 
         <Link
-          href="/learning/review"
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:underline"
+          href="/admin/learning/review"
+          className="inline-flex items-center gap-1.5 text-xs font-medium hover:underline"
+          style={{ color: 'oklch(0.60 0.18 165)' }}
         >
           Go to Review Queue →
         </Link>

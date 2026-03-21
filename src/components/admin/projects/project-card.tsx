@@ -35,7 +35,20 @@ export function ProjectCard({ project }: ProjectCardProps) {
   }
 
   return (
-    <Card size="sm" className="hover:ring-foreground/20 transition-shadow">
+    <Card
+      size="sm"
+      className="bg-card/60 backdrop-blur-sm border-border dark:border-white/10 transition-all"
+      onMouseEnter={(e) => {
+        const el = e.currentTarget as HTMLElement
+        el.style.borderColor = 'oklch(0.60 0.18 165 / 0.3)'
+        el.style.boxShadow = '0 4px 20px oklch(0.60 0.18 165 / 0.1)'
+      }}
+      onMouseLeave={(e) => {
+        const el = e.currentTarget as HTMLElement
+        el.style.borderColor = ''
+        el.style.boxShadow = ''
+      }}
+    >
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
@@ -78,7 +91,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
           {visibleStack.map((tech) => (
             <span
               key={tech}
-              className="inline-flex items-center rounded-md bg-muted px-1.5 py-0.5 text-xs text-muted-foreground"
+              className="inline-flex items-center rounded-md border px-1.5 py-0.5 text-xs"
+            style={{ background: 'oklch(0.60 0.18 165 / 0.08)', borderColor: 'oklch(0.60 0.18 165 / 0.25)', color: 'oklch(0.60 0.18 165)' }}
             >
               {tech}
             </span>
