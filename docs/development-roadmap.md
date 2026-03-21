@@ -70,6 +70,7 @@
 - Rate limiting and security hardening
 - Documentation updates
 - Bug fixes and edge case handling
+- Global search ⌘K command palette for quick navigation
 
 **Status**: 100% Complete
 - [x] Code refactoring: 3 oversized files split (<200 lines)
@@ -80,6 +81,7 @@
 - [x] Suspense boundaries: Dashboard + detail pages for progressive loading
 - [x] E2E tests: Playwright auth + CRUD flows (auth-flow, notes-crud, projects-crud)
 - [x] Rate limiting: In-memory rate limiter (5 req/60s per IP on /login)
+- [x] Global search: ⌘K/Ctrl+K command palette with multi-entity search
 
 ### Phase 08: Deployment & Launch — PLANNED
 - Supabase production environment setup

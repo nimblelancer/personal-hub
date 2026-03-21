@@ -73,6 +73,7 @@ src/
 │
 ├── components/                    # React components
 │   ├── ui/                        # shadcn/ui primitive components
+│   │   ├── command.tsx            # Command palette UI (cmdk)
 │   │   └── [button.tsx, dialog.tsx, input.tsx, etc.]
 │   ├── shared/                    # Shared cross-feature components
 │   │   ├── entity-link-button.tsx     # Button to add/manage links
@@ -134,8 +135,10 @@ src/
 │       ├── review/                # Spaced repetition queue
 │       │   ├── review-queue.tsx   # Queue UI
 │       │   └── review-card.tsx    # Review item
-│       └── settings/              # User settings
-│           └── profile-form.tsx   # Profile editor
+│       ├── settings/              # User settings
+│       │   └── profile-form.tsx   # Profile editor
+│       ├── global-search-palette.tsx  # ⌘K command palette
+│       └── admin-search-provider.tsx  # Search context
 │
 ├── lib/                           # Utilities & services
 │   ├── supabase/
@@ -153,7 +156,8 @@ src/
 │   │   ├── dashboard-actions.ts   # Dashboard data fetching
 │   │   ├── profile-actions.ts     # User profile updates
 │   │   ├── activity-actions.ts    # Activity log queries
-│   │   └── storage-actions.ts     # File/image uploads
+│   │   ├── storage-actions.ts     # File/image uploads
+│   │   └── global-search-actions.ts # Multi-entity global search
 │   ├── review/
 │   │   └── spaced-repetition.ts   # SM-2 algorithm
 │   └── utils.ts                   # Helpers (cn, formatting, etc.)
@@ -237,6 +241,16 @@ src/
 - ✅ Public navbar & footer
 - ✅ SEO: sitemap.ts and robots.ts
 
+### Phase 07: Testing, Polish & Global Search
+- ✅ Unit tests (100+ Vitest cases)
+- ✅ Integration tests (API routes)
+- ✅ E2E tests (Playwright auth, CRUD, spaced repetition)
+- ✅ Rate limiting (in-memory, 5 req/60s on /login)
+- ✅ Code refactoring (<200 LOC per file)
+- ✅ Input validation (Zod schemas)
+- ✅ Error handling (try-catch, consistent returns)
+- ✅ Global search ⌘K command palette (multi-entity, 300ms debounce)
+
 ## Server Actions Reference
 
 All server actions are in `src/lib/actions/` and follow the pattern:
@@ -281,6 +295,11 @@ All server actions are in `src/lib/actions/` and follow the pattern:
 - `getDashboardStats()` — Fetch all widget data
 - `getRecentActivity(limit)` — Activity log summary
 - `getActiveProjectsCount()` — In-progress projects
+
+### Global Search Actions (`global-search-actions.ts`)
+- `globalSearch(query)` — Multi-entity search across notes, bookmarks, projects, roadmaps
+- Returns max 5 results per entity type (20 total), grouped by category
+- 300ms debounce, minimum 2 character query
 
 ## Component Patterns
 
