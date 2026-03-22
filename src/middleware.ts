@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/lib/supabase/middleware'
 import { checkRateLimit } from '@/lib/rate-limiter'
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   // Rate-limit requests to the login page (5 req/min per IP)
   if (request.nextUrl.pathname === '/login') {
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? '127.0.0.1'
