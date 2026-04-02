@@ -93,7 +93,7 @@ export function NoteDetail({ note, linkedEntities }: Props) {
 
         <div className="flex gap-2">
           <Link
-            href={`/learning/notes/${note.id}/edit`}
+            href={`/admin/learning/notes/${note.id}/edit`}
             className="flex-1 inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-lg border border-border text-sm hover:bg-muted transition-colors"
           >
             <Pencil className="size-3.5" /> Edit

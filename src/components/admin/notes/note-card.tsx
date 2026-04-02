@@ -34,7 +34,7 @@ export function NoteCard({ note }: Props) {
   const overflowCount = note.tags.length - 3
 
   return (
-    <Link href={`/learning/notes/${note.id}`} className="block group">
+    <Link href={`/admin/learning/notes/${note.id}`} className="block group">
       <Card className="hover:ring-foreground/20 transition-all h-full">
         <CardHeader>
           <div className="flex items-start justify-between gap-2">
