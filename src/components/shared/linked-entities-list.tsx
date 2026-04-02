@@ -18,9 +18,9 @@ const TYPE_LABEL: Record<string, string> = {
 }
 
 function entityHref(type: string, id: string): string {
-  if (type === 'note') return `/learning/notes/${id}`
+  if (type === 'note') return `/admin/learning/notes/${id}`
   if (type === 'project') return `/projects/${id}`
-  if (type === 'bookmark') return `/learning/bookmarks`
+  if (type === 'bookmark') return `/admin/learning/bookmarks`
   return '#'
 }
 
